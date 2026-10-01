@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Building a Real-Time Event Publishing Platform | Chao Liu</title>
+  <meta name="description" content="A product case study on turning manual map edits into one configurable publishing path for public traffic information and commercial content.">
+  <link rel="canonical" href="https://chaoliu-pm.github.io/cases/event-platform.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Building a Real-Time Event Publishing Platform">
+  <meta property="og:description" content="A product case study on turning manual map edits into one configurable publishing path for public traffic information and commercial content.">
+  <meta property="og:url" content="https://chaoliu-pm.github.io/cases/event-platform.html">
+  <meta property="og:image" content="https://chaoliu-pm.github.io/assets/images/og-event-platform.jpg">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="../index.html">Chao Liu<small>Product Manager</small></a>
+      <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false"><span></span></button>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="../index.html#work">All work</a>
+        <a href="#approach">Approach</a>
+        <a href="#results">Results</a>
+        <a href="#reflection">Reflection</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="case-hero" style="background-image:url('../assets/images/event-platform-hero.webp')">
+      <div class="container case-hero-inner">
+        <p class="eyebrow">Platform product &middot; 0 to 1</p>
+        <h1>From manual map edits to a real-time event platform</h1>
+        <p class="lede">Short-lived traffic events and commercial content raised the same five product questions. I built one publishing path with different approval rules for each use.</p>
+        <div class="case-meta"><span><strong>Role:</strong> Product Manager, end-to-end platform owner</span><span><strong>Company:</strong> Alibaba</span><span><strong>Year:</strong> 2020&ndash;2021</span><span><strong>Duration:</strong> 6 months to full release</span></div>
+      </div>
+    </section>
+
+    <section class="metrics-band" aria-label="Key results">
+      <div class="container metrics-grid">
+        <div class="metric"><strong>Seconds</strong><span>to activation once approved, against one to two days of manual coordination before.</span></div>
+        <div class="metric"><strong>RMB 6M+</strong><span>recognised revenue in the six months following full release.</span></div>
+        <div class="metric"><strong>10+</strong><span>advertising clients live in the same period, alongside traffic operations.</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container story-grid">
+        <div class="story-copy">
+          <p class="eyebrow">The problem</p>
+          <h2>Two unrelated demands, one publishing bottleneck</h2>
+          <p>Traffic operations needed to publish closures, restrictions and temporary controls that lose their value within hours. At the same time a free navigation product needed revenue, and clients wanted to reach drivers before, during and after a drive.</p>
+          <p>Both ran through the same path: an email request, two approvals, and a data team editing the base map by hand. Removal meant repeating all of it. Turnaround was typically one to two days, so an event could expire before it was published, and a manual edit could attach content to the wrong road.</p>
+          <p>Speed was the visible problem. The deeper limit was expressiveness: an event could attach to a whole road, but not to a segment, an area, a planned route, a point of interest or an audience. Automating that workflow alone would have produced the same coarse events, only faster.</p>
+        </div>
+        <div>
+          <div class="comparison-panel old" style="margin-bottom:18px"><h3>What the old model could express</h3><p>One whole road, all users, no end time.</p></div>
+          <div class="comparison-panel new"><h3>What the business needed to express</h3><p>Combine a road segment, a drawn area, a planned route, a POI, an audience and a time window, rather than choose from a fixed list.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="approach">
+      <div class="container">
+        <p class="eyebrow">Product model</p>
+        <h2>Five dimensions, recombined instead of rebuilt</h2>
+        <p class="section-intro">I split the capability along two axes: where past requests had actually varied, and which levers a commercial campaign would plausibly need before any client asked for them. The same five dimensions produced a public-safety notice and a paid campaign. Only the approval path and the delivery rules differed.</p>
+        <figure class="diagram">
+          <p class="diagram-title">One object, two very different events</p>
+          <svg viewBox="0 0 960 330" role="img" aria-label="Five configurable dimensions produce both a public traffic notice and a paid campaign">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="8" y="14" width="250" height="50" rx="6" fill="#e8f4f1" stroke="#e8f4f1" stroke-width="1"/>
+<text x="133" y="45" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#087f78" text-anchor="middle">Audience</text>
+<rect x="8" y="76" width="250" height="50" rx="6" fill="#e8f4f1" stroke="#e8f4f1" stroke-width="1"/>
+<text x="133" y="107" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#087f78" text-anchor="middle">Anchor: point, line or area</text>
+<rect x="8" y="138" width="250" height="50" rx="6" fill="#e8f4f1" stroke="#e8f4f1" stroke-width="1"/>
+<text x="133" y="169" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#087f78" text-anchor="middle">Format: voice or map</text>
+<rect x="8" y="200" width="250" height="50" rx="6" fill="#e8f4f1" stroke="#e8f4f1" stroke-width="1"/>
+<text x="133" y="231" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#087f78" text-anchor="middle">Delivery rules</text>
+<rect x="8" y="262" width="250" height="50" rx="6" fill="#e8f4f1" stroke="#e8f4f1" stroke-width="1"/>
+<text x="133" y="293" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#087f78" text-anchor="middle">Lifecycle and stop condition</text>
+<path d="M264 120 H300 V80" fill="none" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M264 200 H300 V250" fill="none" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="320" y="14" width="300" height="300" rx="6" fill="#ffffff" stroke="#087f78" stroke-width="1"/>
+<text x="470" y="44" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="#14222b" text-anchor="middle">Exam-day quiet zone</text>
+<text x="470" y="66" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#087f78" text-anchor="middle">one approval  ·  traffic operations</text>
+<line x1="338" y1="84" x2="602" y2="84" stroke="#d9e1df" stroke-width="1"/>
+<text x="470" y="104" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">Drivers routing near an exam site</text>
+<line x1="338" y1="128" x2="602" y2="128" stroke="#d9e1df" stroke-width="1"/>
+<text x="470" y="148" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">A geofence around each exam centre</text>
+<line x1="338" y1="172" x2="602" y2="172" stroke="#d9e1df" stroke-width="1"/>
+<text x="470" y="192" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">Voice plus map display</text>
+<line x1="338" y1="216" x2="602" y2="216" stroke="#d9e1df" stroke-width="1"/>
+<text x="470" y="236" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">Once before and once during the drive</text>
+<line x1="338" y1="260" x2="602" y2="260" stroke="#d9e1df" stroke-width="1"/>
+<text x="470" y="280" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">Exam days only, ends automatically</text>
+<rect x="640" y="14" width="300" height="300" rx="6" fill="#f9eee5" stroke="#db6f28" stroke-width="1"/>
+<text x="790" y="44" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="#9c4d15" text-anchor="middle">Retail campaign</text>
+<text x="790" y="66" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#db6f28" text-anchor="middle">two approvals  ·  marketing</text>
+<line x1="658" y1="84" x2="922" y2="84" stroke="#d9e1df" stroke-width="1"/>
+<text x="790" y="104" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">A profile segment in one city</text>
+<line x1="658" y1="128" x2="922" y2="128" stroke="#d9e1df" stroke-width="1"/>
+<text x="790" y="148" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">A POI and the area around it</text>
+<line x1="658" y1="172" x2="922" y2="172" stroke="#d9e1df" stroke-width="1"/>
+<text x="790" y="192" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">Voice at navigation start</text>
+<line x1="658" y1="216" x2="922" y2="216" stroke="#d9e1df" stroke-width="1"/>
+<text x="790" y="236" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">08:00-09:00, capped frequency</text>
+<line x1="658" y1="260" x2="922" y2="260" stroke="#d9e1df" stroke-width="1"/>
+<text x="790" y="280" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">Stops on reach cap, not only on time</text>
+</svg>
+          <figcaption>On national exam days the platform published quiet-zone notices around every exam centre, reaching drivers who had routed nearby before and during navigation. The same machinery carried paid campaigns under a second approval step.</figcaption>
+        </figure>
+      </div>
+      <div class="container">
+        <figure class="diagram">
+          <p class="diagram-title">Where commercial content meets the drive</p>
+          <svg viewBox="0 0 960 230" role="img" aria-label="Four moments in a drive: route planning, navigation start, en route and after arrival; start and arrival are the contested slots">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<line x1="40" y1="70" x2="920" y2="70" stroke="#d9e1df" stroke-width="2"/>
+<circle cx="120" cy="70" r="11" fill="#087f78"/>
+<text x="120" y="112" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">Route planning</text>
+<text x="120" y="132" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#087f78" text-anchor="middle">map display</text>
+<text x="120" y="154" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#596a73" text-anchor="middle">a retail brand beside</text>
+<text x="120" y="171" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#596a73" text-anchor="middle">the destination</text>
+<circle cx="360" cy="70" r="11" fill="#db6f28"/>
+<text x="360" y="112" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">Navigation start</text>
+<text x="360" y="132" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#db6f28" text-anchor="middle">voice</text>
+<text x="360" y="154" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#596a73" text-anchor="middle">a short greeting, drinks</text>
+<text x="360" y="171" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#596a73" text-anchor="middle">category</text>
+<rect x="282" y="188" width="156" height="26" rx="13" fill="#f9eee5" stroke="#f9eee5" stroke-width="1"/>
+<text x="360" y="206" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#9c4d15" text-anchor="middle">ten or more clients wanted this slot</text>
+<circle cx="600" cy="70" r="11" fill="#087f78"/>
+<text x="600" y="112" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">En route</text>
+<text x="600" y="132" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#087f78" text-anchor="middle">voice and map</text>
+<text x="600" y="154" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#596a73" text-anchor="middle">dining, fuel and attractions</text>
+<text x="600" y="171" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#596a73" text-anchor="middle">nearby</text>
+<circle cx="840" cy="70" r="11" fill="#db6f28"/>
+<text x="840" y="112" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">After arrival</text>
+<text x="840" y="132" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#db6f28" text-anchor="middle">voice</text>
+<text x="840" y="154" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#596a73" text-anchor="middle">hotel and dining services</text>
+<text x="840" y="171" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#596a73" text-anchor="middle"></text>
+<rect x="762" y="188" width="156" height="26" rx="13" fill="#f9eee5" stroke="#f9eee5" stroke-width="1"/>
+<text x="840" y="206" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#9c4d15" text-anchor="middle">ten or more clients wanted this slot</text>
+<text x="40" y="40" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="start">one drive, four moments</text>
+</svg>
+          <figcaption>En route content is location-relevant and tolerant of length. Navigation start and arrival are interruptions, so they stay short. Those were exactly the two slots every client wanted.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="eyebrow">The hard part</p>
+        <h2>The real question was how far to abstract</h2>
+        <p class="section-intro">Building per client would have been fast once and unscalable after. A fully generic rule engine would have been flexible in a way operations could not use and delivery could not carry. The composable middle only works if the right dimensions are chosen, and guessing wrong wastes the work.</p>
+        <div class="policy-grid">
+          <article class="policy-card"><span class="confidence">Deliberately not built</span><h3>A priority and collision engine</h3><p>High-priority events could have pre-empted low-priority ones automatically. The more complex the rules, the less a client could predict whether their campaign would actually run.</p><div class="policy-output">Predictability first</div></article>
+          <article class="policy-card"><span class="confidence">What we did instead</span><h3>Manual separation</h3><p>Operations separated campaigns by time slot and by area. This was manual but predictable for the client. In early monetisation, that predictability mattered more than optimal allocation.</p><div class="policy-output">Time and area</div></article>
+          <article class="policy-card"><span class="confidence">What the model missed</span><h3>Broadcast capacity</h3><p>A client wanted a longer message in the idle stretch of a drive. Many routes had no gap long enough to play it. Format was modelled as a choice, when it is also a capacity that changes with every route.</p><div class="policy-output">A missing dimension</div></article>
+          <article class="policy-card"><span class="confidence">How it was resolved</span><h3>Recombination, not new code</h3><p>Shorter copy, moved to the pre- and post-navigation touchpoints, with stronger map display carrying the message. No new feature was built; the fix came from dimensions the model already had.</p><div class="policy-output">The model absorbed it</div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="results">
+      <div class="container results-layout">
+        <div>
+          <p class="eyebrow">Results and attribution</p>
+          <h2>What the platform proved, and what it did not</h2>
+          <p>Publishing went from one to two days of coordination to seconds after approval. Two business lines ran on one path, with traffic events taking one approval and commercial content two. Throughput settled at roughly 17 commercial placements and about five traffic events a month.</p>
+          <p>Clients bought the ability to publish into navigation moments; the platform itself was never sold externally. Revenue was received and recognised, not booked or forecast.</p>
+        </div>
+        <div>
+          <div class="evidence-note" style="margin-top:0"><strong>Delivery, not conversion:</strong> the platform counted users reached, voice plays and map displays, with per-user and peak exposure alongside them. It had no click, footfall or conversion funnel, so it could show that a message was delivered but not that it changed behaviour.</div>
+          <div class="evidence-note"><strong>Scale context:</strong> this ran inside a navigation product with over 100 million daily active users. That is the environment, not the reach of any single event.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="reflection">
+      <div class="container story-grid">
+        <div>
+          <p class="eyebrow">What I contributed</p>
+          <h2>Governance carried the difference, not code</h2>
+          <p class="lede">I owned the platform end to end: the product model, the requirement decomposition across seven teams and about thirty engineers, and delivery through to launch. Per-user and peak exposure were first-class metrics from the start, because monetising a navigation moment is also a way to spend a user&rsquo;s attention.</p>
+        </div>
+        <div class="attribution">
+          <h3>What I would design differently</h3>
+          <p>Treat broadcast capacity as a dimension in the model, not a constant. And run a real test pass before approval: publish to a designated test audience first, so operations sees the actual result instead of imagining it. Both are how I would build it today, not capabilities that shipped at the time.</p>
+        </div>
+      </div>
+      <div class="container hero-actions">
+        <a class="button button-light" href="../downloads/Chao_Liu_PM_Portfolio_Event_Platform.pdf" download>Download the case PDF</a>
+        <a class="button button-secondary" style="border-color:#fff;color:#fff" href="../index.html#work">Back to selected work</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="eyebrow">Continue</p>
+        <div class="case-nav">
+          <a href="drone-delivery.html"><span>Previous case</span><strong>Scaling drone delivery through navigation reliability</strong></a>
+          <a href="complex-junctions.html"><span>Next case</span><strong>Machine learning for complex-junction guidance</strong></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-row"><span>&copy; <span data-year></span> Chao Liu</span><span>Details anonymised &middot; Interfaces reconstructed &middot; Photos illustrative</span></div></footer>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

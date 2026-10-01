@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Scaling Drone Delivery Through Navigation Reliability | Chao Liu</title>
+  <meta name="description" content="A product case study on turning manual takeover into a reversible state so one operator could safely cover more drone delivery routes.">
+  <link rel="canonical" href="https://chaoliu-pm.github.io/cases/drone-delivery.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Scaling Drone Delivery Through Navigation Reliability">
+  <meta property="og:description" content="A product case study on turning manual takeover into a reversible state so one operator could safely cover more drone delivery routes.">
+  <meta property="og:url" content="https://chaoliu-pm.github.io/cases/drone-delivery.html">
+  <meta property="og:image" content="https://chaoliu-pm.github.io/assets/images/og-drone.jpg">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body class="drone-case">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="../index.html">Chao Liu<small>Product Manager</small></a>
+      <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false"><span></span></button>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="../index.html#work">All work</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#validation">Validation</a>
+        <a href="#reflection">Reflection</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="case-hero" id="overview" data-chapter style="background-image:url('../assets/images/drone-hero.webp')">
+      <div class="container case-hero-inner">
+        <p class="eyebrow">01 &middot; Overview</p>
+        <h1>Scaling drone delivery through navigation reliability</h1>
+        <p class="lede">An emerging drone delivery business needed to expand its routes. I led navigation and operations improvements that reduced manual workload while keeping safety controls intact.</p>
+        <div class="case-meta"><span><strong>Role:</strong> Senior Product Manager</span><span><strong>Company:</strong> Meituan</span><span><strong>Year:</strong> 2023&ndash;2024</span><span><strong>Project:</strong> 6 months</span><span><strong>Phased rollout:</strong> 1.5 months</span></div>
+      </div>
+    </section>
+
+    <section class="metrics-band" aria-label="Key results">
+      <div class="container metrics-grid">
+        <div class="metric"><strong>16.8%</strong><span>shorter manual intervention on flights where navigation recovered.</span></div>
+        <div class="metric"><strong>98%</strong><span>of historical anomaly cases covered by the added alerts. Historical coverage, not a live detection rate.</span></div>
+        <div class="metric"><strong>2 modes</strong><span>monitor-only autonomous flight and return to autonomy after manual takeover.</span></div>
+      </div>
+      <p class="container metric-boundary">The intervention reduction is measured on takeover logs for recovered flights. Alert coverage refers to historical anomaly cases, not a live detection rate. Route growth also depended on other changes and is not attributed to this project alone.</p>
+    </section>
+
+    <nav class="chapter-nav" aria-label="Case study chapters"><div class="container">
+      <a href="#overview" aria-current="location"><span>01</span> Overview</a>
+      <a href="#context"><span>02</span> Context</a>
+      <a href="#roadmap"><span>03</span> Roadmap</a>
+      <a href="#design"><span>04</span> Design &amp; trade-offs</a>
+      <a href="#console"><span>05</span> Console</a>
+      <a href="#validation"><span>06</span> Release</a>
+      <a href="#reflection"><span>07</span> Reflection</a>
+    </div></nav>
+
+    <section class="section section-soft case-chapter" id="context" data-chapter>
+      <div class="container">
+        <header class="chapter-heading"><p class="eyebrow">02 &middot; The business constraint</p><h2>Context &amp; diagnosis</h2><p>Route growth increased the workload each operator needed to support.</p></header>
+        <div class="delivery-context">
+          <div class="delivery-goal"><span class="eyebrow">Business goal</span><strong>+50%</strong><p>Planned growth in fixed delivery routes.</p><p>An emerging delivery business, with flight and operations systems still evolving.</p><p class="compact-guardrails"><b>Service guardrails</b>Grow without worsening on-time delivery, failure or complaint rates.</p></div>
+          <div>
+            <ol class="delivery-flow">
+              <li><img src="../assets/images/drone-station.webp" width="1200" height="800" alt="Drones at the launch station"><h3><span>1</span> Launch station</h3><p>Couriers drop off orders; staff load drones.</p></li>
+              <li class="flight-step"><h3><span>2</span> Autonomous flight</h3><p>Fixed delivery corridor</p><div class="flight-corridor" aria-hidden="true"><span class="drone-icon"></span></div><p class="flight-status">Live status to operations</p></li>
+              <li><img src="../assets/images/drone-locker.webp" width="1200" height="800" alt="A delivery drone arriving at a rooftop locker"><h3><span>3</span> Rooftop locker</h3><p>The drone delivers from above.</p></li>
+            </ol>
+            <div class="operator-band">
+              <div class="operator-person"><span class="headset-icon" aria-hidden="true"></span><div><h3>Operations centre</h3><p>Each operator cycles through multiple drones to check for anomalies.</p></div></div>
+              <div class="fleet-illustration" role="img" aria-label="Illustrative fleet growth: existing drones and additional drones as routes expand; not an actual staffing ratio">
+                <div><div class="fleet-icons" aria-hidden="true"><span class="drone-icon"></span><span class="drone-icon"></span><span class="drone-icon"></span><span class="drone-icon"></span><span class="drone-icon"></span><span class="drone-icon"></span><span class="drone-icon"></span><span class="drone-icon"></span></div><p>Today</p></div>
+                <div class="fleet-added"><div class="fleet-icons" aria-hidden="true"><span class="drone-icon"></span><span class="drone-icon"></span><span class="drone-icon"></span><span class="drone-icon"></span></div><p>Route expansion</p></div>
+              </div>
+              <div class="operator-ratio"><strong>1 : N</strong><p>More drones to support as routes grow.</p></div>
+            </div>
+            <p class="fleet-note">Fleet icons illustrate workload growth, not actual drone counts or staffing ratios.</p>
+            <p class="credit">Photos from public news coverage of the product.</p>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <figure class="diagram">
+          <p class="eyebrow">Diagnosis</p>
+          <h3 class="diagram-title">Three sources of operator workload</h3>
+          <svg viewBox="0 0 960 250" role="img" aria-label="Operator capacity equals takeover count times duration plus monitoring load; each term traces to a navigation gap">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="300" y="8" width="360" height="56" rx="6" fill="#e8f4f1" stroke="#e8f4f1" stroke-width="1"/>
+<text x="480" y="32" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#087f78" text-anchor="middle">Operator capacity</text>
+<text x="480" y="52" font-family="Inter, sans-serif" font-size="13" font-weight="400" fill="#596a73" text-anchor="middle">count  ×  duration  +  monitoring load</text>
+<path d="M480 66 V86 H150 V104" fill="none" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M480 86 V104" fill="none" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M480 86 H810 V104" fill="none" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="10" y="106" width="300" height="60" rx="6" fill="#ffffff" stroke="#d9e1df" stroke-width="1"/>
+<text x="160" y="130" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">Takeover count</text>
+<text x="160" y="152" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">how often a flight goes manual</text>
+<line x1="160" y1="168" x2="160" y2="184" stroke="#db6f28" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="10" y="186" width="300" height="56" rx="6" fill="#f9eee5" stroke="#f9eee5" stroke-width="1"/>
+<text x="160" y="209" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#9c4d15" text-anchor="middle">One degraded state, so every</text>
+<text x="160" y="227" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#9c4d15" text-anchor="middle">alert meant a person</text>
+<rect x="330" y="106" width="300" height="60" rx="6" fill="#ffffff" stroke="#d9e1df" stroke-width="1"/>
+<text x="480" y="130" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">Takeover duration</text>
+<text x="480" y="152" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">how long each one lasts</text>
+<line x1="480" y1="168" x2="480" y2="184" stroke="#db6f28" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="330" y="186" width="300" height="56" rx="6" fill="#f9eee5" stroke="#f9eee5" stroke-width="1"/>
+<text x="480" y="209" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#9c4d15" text-anchor="middle">Once manual, the flight stayed</text>
+<text x="480" y="227" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#9c4d15" text-anchor="middle">manual until it landed</text>
+<rect x="650" y="106" width="300" height="60" rx="6" fill="#ffffff" stroke="#d9e1df" stroke-width="1"/>
+<text x="800" y="130" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">Monitoring load</text>
+<text x="800" y="152" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">watching flights that are fine</text>
+<line x1="800" y1="168" x2="800" y2="184" stroke="#db6f28" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="650" y="186" width="300" height="56" rx="6" fill="#f9eee5" stroke="#f9eee5" stroke-width="1"/>
+<text x="800" y="209" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#9c4d15" text-anchor="middle">Alerts covered too little for</text>
+<text x="800" y="227" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#9c4d15" text-anchor="middle">an operator to trust them</text>
+</svg>
+          <figcaption>Writing capacity as three terms made the diagnosis testable. Each term pointed at a navigation product gap rather than at operator performance.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section case-chapter" id="roadmap" data-chapter>
+      <div class="container">
+        <header class="chapter-heading"><p class="eyebrow">03 &middot; Three improvement directions</p><h2>Product roadmap</h2><p>Navigation capability, downstream flight behaviour and reliable alerts formed coordinated workstreams, not sequential releases.</p></header>
+        <div class="roadmap-layout">
+          <div class="system-chain" aria-label="System flow and feedback loop">
+            <div><h3>Signal inputs</h3><p>Satellite, vision and sensors</p></div><span class="system-arrow" aria-hidden="true">&darr;</span>
+            <div class="system-navigation"><h3>Navigation <small>01</small></h3><p>Position, attitude and navigation health</p></div><span class="system-arrow">Health state &darr;</span>
+            <div><h3>Flight systems <small>02</small></h3><p>Flight control and route planning</p></div><span class="system-arrow" aria-hidden="true">&darr;</span>
+            <div><h3>Execution <small>03</small></h3><p>Autonomous flight, monitoring or manual control</p></div>
+          </div>
+          <div class="roadmap-work">
+            <article><span class="step-number">01</span><div><h3>Technical capability</h3><strong>Reduce navigation degradation</strong><p>Identify recurring weak-signal areas and improve accuracy through scenario-specific technical and product changes.</p></div></article>
+            <article><span class="step-number">02</span><div><h3>Navigation utilisation</h3><strong>Use navigation health to choose the response</strong><p>Keep eligible flights autonomous with a wider safety envelope and operator monitoring. Allow manual flights to return to autonomy after the recovery checks pass.</p></div></article>
+            <article><span class="step-number">03</span><div><h3>System reliability</h3><strong>Make anomalies actionable</strong><p>Extend alerts and map them to monitoring or takeover recommendations. Use logs and historical replay to evaluate behaviour.</p></div></article>
+            <p class="roadmap-outcome"><strong>Intended outcome</strong> Support route growth with lower operator workload and safety controls intact.</p>
+            <p class="credit">Delivery across eight teams. Automated bad-case capture remained a gap, discussed in the reflection below.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft case-chapter" id="design" data-chapter>
+      <div class="container">
+        <header class="chapter-heading"><p class="eyebrow">04 &middot; Design &amp; trade-offs</p><h2>Design &amp; trade-offs</h2><p>Two modes changed when an operator needed to act and when control could return to the drone.</p></header>
+        <div class="mode-summary"><div><h3>01 &middot; Monitor-only flight</h3><p>When navigation degrades but remains usable, eligible drones stay autonomous with a wider safety envelope and operator monitoring.</p></div><div><h3>02 &middot; Return to autonomy</h3><p>After manual takeover, recovered navigation can support autonomous flight again once the recovery checks pass and the operator confirms.</p></div></div>
+        <figure class="diagram">
+          <h3 class="diagram-title">Manual takeover became reversible</h3>
+          <svg viewBox="0 0 960 260" role="img" aria-label="Old policy ended in return or land; the new policy adds health states, monitor-only and a recovery gate that returns the aircraft to autonomous flight">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="86" width="220" height="62" rx="6" fill="#ffffff" stroke="#d9e1df" stroke-width="1"/>
+<text x="120" y="116" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">Autonomous flight</text>
+<rect x="250" y="86" width="220" height="62" rx="6" fill="#f9eee5" stroke="#db6f28" stroke-width="1"/>
+<text x="360" y="116" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#9c4d15" text-anchor="middle">Health state</text>
+<rect x="490" y="86" width="220" height="62" rx="6" fill="#f9eee5" stroke="#db6f28" stroke-width="1"/>
+<text x="600" y="116" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#9c4d15" text-anchor="middle">Monitor or take over</text>
+<rect x="730" y="86" width="220" height="62" rx="6" fill="#f9eee5" stroke="#db6f28" stroke-width="1"/>
+<text x="840" y="116" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#9c4d15" text-anchor="middle">Recovery gate</text>
+<text x="840" y="136" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#9c4d15" text-anchor="middle">Checks + operator confirmation</text>
+<line x1="230" y1="117" x2="248" y2="117" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<line x1="470" y1="117" x2="488" y2="117" stroke="#db6f28" stroke-width="1.6" marker-end="url(#ah)"/>
+<line x1="710" y1="117" x2="728" y2="117" stroke="#db6f28" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M840 86 V44 H128 V80" fill="none" stroke="#087f78" stroke-width="2.4" marker-end="url(#ah)"/>
+<text x="484" y="34" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#087f78" text-anchor="middle">navigation recovers  ·  control returns to the aircraft</text>
+<path d="M600 148 V196" fill="none" stroke="#9eaaa9" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="490" y="198" width="220" height="50" rx="6" fill="#f1f3f2" stroke="#c7d0ce" stroke-width="1"/>
+<text x="600" y="228" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#596a73" text-anchor="middle">Return or land</text>
+<text x="722" y="224" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="start">the old default, kept as a fallback</text>
+</svg>
+          <figcaption>Recovery requires system checks and operator confirmation. Return or landing remains the fallback.</figcaption>
+        </figure>
+      </div>
+      <div class="container decision-tradeoffs">
+        <article class="decision-tradeoff">
+          <p class="eyebrow">Trade-off 01</p><h3>Recovery stability versus operational benefit</h3>
+          <div class="threshold-options"><div><h4>A threshold that is too low</h4><p>Temporary recovery could trigger repeated switching between autonomous flight and manual takeover, adding risk and operator workload.</p></div><div><h4>A threshold that is too high</h4><p>Recoverable flights stay manual for longer, limiting the time saved and the operational benefit.</p></div></div>
+          <p class="recovery-rule"><strong>The decision:</strong> Require a multi-source fix, an accuracy threshold, a stable time window, a fresh route and an operator click before control returns to the drone. These checks balance stable recovery with the opportunity to reduce manual intervention.</p>
+        </article>
+        <article class="decision-tradeoff">
+          <p class="eyebrow">Trade-off 02</p><h3>Near-term effort versus long-term system value</h3>
+          <dl class="team-priorities"><div><dt>Engineering</dt><dd>Safety concerns and implementation effort made the limited near-term benefit harder to justify.</dd></div><div><dt>Operations</dt><dd>Recoverable flights continued to occupy operators even when they could fly autonomously again.</dd></div><div><dt>Product</dt><dd>I considered both the recoverable operator time and the long-term value of completing the autonomy-to-manual-to-autonomy workflow.</dd></div></dl>
+          <h4 class="data-decision-heading">Data-driven decision</h4>
+          <p>I used takeover logs to assess the recovery opportunity, then combined that evidence with the long-term value of a complete handover workflow.</p>
+          <figure class="recovery-evidence">
+            <dl><div><dt>Navigation takeovers</dt><dd>All navigation takeovers in the analysed sample</dd></div><div><dt>Navigation recovered</dt><dd><strong>~1 in 4</strong><span>of the navigation takeovers in that sample</span></dd></div><div><dt>Recovery held</dt><dd><strong>~9 in 10 of those</strong><span>of the recovered cases, not of all takeovers</span></dd></div></dl>
+            <figcaption>Approximate proportions from historical takeover-log analysis used for the benefit case; not a measured post-launch improvement.</figcaption>
+          </figure>
+          <p class="recovery-rule"><strong>The decision:</strong> Build the reversible handover with strict recovery checks. The logs supported a near-term opportunity to save operator time; system completeness provided a longer-term reason to invest as the delivery network expanded.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section case-chapter" id="console" data-chapter>
+      <div class="container console-section">
+        <header class="chapter-heading"><p class="eyebrow">05 &middot; The operator experience</p><h2>Operator console</h2><p>Navigation states become alerts, recommended actions and controls. These interfaces are reconstructed from the case presentation.</p></header>
+        <h3 class="console-title">01 &middot; Fleet overview and navigation alerts</h3>
+        <figure class="visual-frame console-visual">
+          <a href="../assets/images/drone-console.webp" target="_blank" rel="noopener" aria-label="Open the reconstructed operator console at full size"><img src="../assets/images/drone-console.webp" width="1600" height="900" alt="Reconstructed remote operator console showing navigation alerts, monitor-only flight and return to autonomous flight"></a>
+          <figcaption class="visual-caption">Operator console from the case presentation. Navigation states guide monitoring, takeover and recovery. Open the image to inspect it at full size.</figcaption>
+          <p class="credit">Reconstructed interface, not an internal screenshot. Drone IDs, routes, codes and times are illustrative.</p>
+        </figure>
+        <div class="console-modes">
+          <h3 class="console-title">02 &middot; Monitoring without manual control</h3>
+          <figure class="visual-frame console-visual">
+            <a href="../assets/images/drone-console-monitor.webp" target="_blank" rel="noopener" aria-label="Open the monitor-only console at full size"><img src="../assets/images/drone-console-monitor.webp" width="1600" height="900" loading="lazy" alt="Reconstructed console with two degraded-navigation drones pinned for monitoring while autonomous flight continues"></a>
+            <figcaption class="visual-caption"><strong>Monitor-only mode.</strong> The operator watches the affected drones while they remain in autonomous flight. The monitoring windows stay open until the alerts clear.</figcaption>
+          </figure>
+          <h3 class="console-title">03 &middot; Manual takeover and return to autonomy</h3>
+          <figure class="visual-frame console-visual">
+            <a href="../assets/images/drone-console-recovery.webp" target="_blank" rel="noopener" aria-label="Open the manual takeover and recovery console at full size"><img src="../assets/images/drone-console-recovery.webp" width="1600" height="900" loading="lazy" alt="Reconstructed manual-control console with a navigation recovered notification and a return to autonomous flight control"></a>
+            <figcaption class="visual-caption"><strong>Return to autonomy.</strong> After navigation recovers and the system checks pass, the operator can hand control back instead of remaining in manual control until landing.</figcaption>
+          </figure>
+          <p class="credit">Both interfaces are reconstructed illustrations from the presentation. IDs, routes, codes and times are illustrative. Select either image to view it at full size.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft case-chapter" id="validation" data-chapter>
+      <div class="container">
+        <div class="story-copy rollout-copy">
+          <header class="chapter-heading"><p class="eyebrow">06 &middot; Evidence before exposure</p><h2>Validation &amp; release</h2><p>Testing exposed a route-refresh risk. The team corrected the design before expanding route exposure.</p></header>
+          <ol class="validation-steps">
+            <li><span class="step-number">01</span><h3>Historical replay</h3><p>Past routes and known navigation failures.</p></li>
+            <li><span class="step-number">02</span><h3>Bad-case regression</h3><p>Exception cases re-run against the new logic.</p></li>
+            <li><span class="step-number">03</span><h3>Controlled flights</h3><p>100+ test flights on target routes.</p></li>
+            <li><span class="step-number">04</span><h3>Staged rollout</h3><p>1, 10, 50 and 100 routes, then fleet-wide; each expansion follows release checks.</p></li>
+          </ol>
+          <div class="rollout-detail">
+            <div><h3>Checks at every rollout step</h3><ul class="gate-list"><li>Order success rate</li><li>Order delay rate</li><li>Blocking issues: severity and count</li></ul><p><strong>Project: 6 months</strong><br>Phased rollout: 1.5 months</p></div>
+            <div><h3>What controlled flights exposed</h3><dl class="release-decisions"><dt>Finding</dt><dd>Recovery still needed a fresh route from the cloud.</dd><dt>Risk</dt><dd>Network latency could delay handover or leave a stale route.</dd><dt>Decision</dt><dd>Delay release by one week and add two route-refresh points.</dd><dt>Correction</dt><dd>Request a route when the signal recovers; refresh again at handover.</dd></dl></div>
+          </div>
+          <p><strong>The recovery requirements stayed intact. The release date moved by one week.</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark case-chapter" id="reflection" data-chapter>
+      <div class="container">
+        <header class="chapter-heading"><p class="eyebrow">07 &middot; What I take from it</p><h2>Contribution &amp; reflection</h2><p>Two principles I carry into the next product problem.</p></header>
+        <div class="reflection-grid">
+          <div class="reflection-evidence">
+            <article><p class="eyebrow">What I contributed</p><h3>I did not stop at navigation accuracy.</h3><p>I worked backwards from the business constraint, defined three improvement directions across the system and led delivery with eight teams. Engineering and operations built and validated the changes with me.</p></article>
+            <article><p class="eyebrow">What I would change</p><h3>Build automatic bad-case capture first.</h3><p>Incidents were collected by hand. Limited onboard storage and no automatic log-return channel left too few complete snapshots for replay. Earlier investment in observability would have strengthened later validation.</p></article>
+          </div>
+          <div class="reflection-principles">
+            <article><span>01</span><h3>Your part getting better does not mean the system got better.</h3><p>Systems thinking connects product decisions to company goals. Here, better navigation also needed different flight responses and operator workflows.</p></article>
+            <article><span>02</span><h3>A technical limit need not become a business limit.</h3><p>Product judgement can extend what a system can do through scenario design, operating rules and human support, while keeping safety requirements intact.</p></article>
+          </div>
+        </div>
+      </div>
+      <div class="container hero-actions">
+        <a class="button button-light" href="../downloads/Chao_Liu_PM_Portfolio_Drone_Delivery.pdf" download>Earlier presentation PDF</a>
+        <a class="button button-secondary" style="border-color:#fff;color:#fff" href="../index.html#work">Back to selected work</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="eyebrow">Continue</p>
+        <div class="case-nav">
+          <a href="event-platform.html"><span>Next case</span><strong>Building a real-time event publishing platform</strong></a>
+          <a href="complex-junctions.html"><span>Also</span><strong>Machine learning for complex-junction guidance</strong></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-row"><span>&copy; <span data-year></span> Chao Liu</span><span>Details anonymised &middot; Interfaces reconstructed &middot; Photos illustrative</span></div></footer>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

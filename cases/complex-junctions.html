@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Machine Learning for Complex Junctions | Chao Liu</title>
+  <meta name="description" content="A product case study on using machine learning and confidence-based UX to reduce navigation errors at complex junctions.">
+  <link rel="canonical" href="https://chaoliu-pm.github.io/cases/complex-junctions.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Machine Learning for Complex-Junction Guidance">
+  <meta property="og:description" content="How labelled data, driver behaviour and confidence-based guidance reduced off-route events.">
+  <meta property="og:url" content="https://chaoliu-pm.github.io/cases/complex-junctions.html">
+  <meta property="og:image" content="https://chaoliu-pm.github.io/assets/images/og-complex-junctions.jpg">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="../index.html">Chao Liu<small>Product Manager</small></a>
+      <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false"><span></span></button>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="../index.html#work">All work</a>
+        <a href="#approach">Approach</a>
+        <a href="#results">Results</a>
+        <a href="#reflection">Reflection</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="case-hero" style="background-image:url('../assets/images/complex-junctions-hero.webp')">
+      <div class="container case-hero-inner">
+        <p class="eyebrow">Machine-learning product · Scenario optimisation</p>
+        <h1>Helping drivers make the right decision at complex junctions</h1>
+        <p class="lede">I initiated a bounded machine-learning use case that replaced fragile rules with labelled data, behavioural signals and product responses matched to model confidence.</p>
+        <div class="case-meta"><span><strong>Role:</strong> Product Manager, initiated and led the project</span><span><strong>Company:</strong> Alibaba</span><span><strong>Year:</strong> 2021</span><span><strong>Duration:</strong> 6 months</span></div>
+      </div>
+    </section>
+
+    <section class="metrics-band" aria-label="Key results">
+      <div class="container metrics-grid">
+        <div class="metric"><strong>2-3%</strong><span>of junctions were complex, a small but high-friction long tail.</span></div>
+        <div class="metric"><strong>~1.5&times;</strong><span>the off-route rate of ordinary junctions before intervention.</span></div>
+        <div class="metric"><strong>-28%</strong><span>motorway detours in the validated motorway scenario.</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container story-grid">
+        <div class="story-copy">
+          <p class="eyebrow">The problem</p>
+          <h2>A small share of roads created an outsized cost</h2>
+          <p>At multi-way, consecutive and visually similar junctions, a single wrong choice can mean a detour of tens of kilometres, especially on motorways. These junctions represented only 2-3% of the network, yet their off-route rate ran about one and a half times that of ordinary junctions, and they were a recurring theme in user feedback.</p>
+          <p>The existing solution relied on serial <code>if/else</code> rules built from map geometry. Each new patch increased interaction between rules, making the system difficult to maintain and unable to recognise the full variety of real-world junctions.</p>
+        </div>
+        <figure class="visual-frame">
+          <img src="../assets/images/motorway-context.webp" width="960" height="720" alt="A real motorway split with several adjacent exits">
+          <figcaption class="visual-caption">A wrong decision at motorway speed has a much higher user cost than an ordinary urban turn.</figcaption>
+          <p class="credit">Illustrative photo. Doug Kerr, CC BY-SA 2.0.</p>
+        </figure>
+      </div>
+      <div class="container comparison">
+        <div class="comparison-panel old"><h3>Before</h3><p>Rule patches evaluated one after another. A useful new rule could be excluded by earlier logic, with little visibility into why.</p></div>
+        <div class="comparison-arrow" aria-hidden="true">→</div>
+        <div class="comparison-panel new"><h3>Product decision</h3><p>Use machine learning only for this well-bounded scenario, where humans could label ground truth and the product could absorb uncertainty.</p></div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="approach">
+      <div class="container story-grid reverse">
+        <figure class="visual-frame">
+          <img src="../assets/images/junction-map.webp" width="960" height="720" alt="Map showing a complex motorway interchange">
+          <figcaption class="visual-caption">Map structure alone was not enough. Driver behaviour helped distinguish geometric complexity from real navigation difficulty.</figcaption>
+          <p class="credit">Map &copy; OpenStreetMap contributors.</p>
+        </figure>
+        <div class="story-copy">
+          <p class="eyebrow">Data strategy</p>
+          <h2>Ground truth connected the map to the physical world</h2>
+          <p>I defined a broad candidate pool from three sources: rule mining, trajectory mining and real user feedback. From that pool, across ten priority cities, the team manually labelled over 20,000 real junctions as ground truth and split them into separate training and evaluation sets.</p>
+          <p>Clear labelling rules, double annotation and human checks kept the labels consistent. Because the pool mixed rule-derived candidates with trajectory and user-reported ones, the evaluation set contained junctions the rules themselves could never have expressed.</p>
+          <div class="signal-grid">
+            <div class="signal"><strong>Map structure</strong><span>Road class, lane count, direction, connection angle and topology.</span></div>
+            <div class="signal"><strong>Driver behaviour</strong><span>Off-route, U-turn and return-to-route patterns added weight to difficult locations.</span></div>
+            <div class="signal"><strong>Local context</strong><span>City and road-level analysis separated true complexity from positioning delay.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <figure class="diagram">
+          <p class="diagram-title">How the dataset was built</p>
+          <svg viewBox="0 0 960 300" role="img" aria-label="From three candidate sources to a labelled dataset split into training and evaluation sets">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="8" y="18" width="210" height="74" rx="6" fill="#ffffff" stroke="#d9e1df" stroke-width="1"/>
+<text x="26" y="48" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="start">Rule mining</text>
+<text x="26" y="70" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="start">high recall, low precision</text>
+<line x1="224" y1="55" x2="268" y2="150" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="8" y="113" width="210" height="74" rx="6" fill="#ffffff" stroke="#d9e1df" stroke-width="1"/>
+<text x="26" y="143" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="start">Trajectory mining</text>
+<text x="26" y="165" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="start">where drivers went off-route</text>
+<line x1="224" y1="150" x2="268" y2="150" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="8" y="208" width="210" height="74" rx="6" fill="#ffffff" stroke="#d9e1df" stroke-width="1"/>
+<text x="26" y="238" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="start">User feedback</text>
+<text x="26" y="260" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="start">junctions drivers reported</text>
+<line x1="224" y1="245" x2="268" y2="150" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="274" y="40" width="170" height="220" rx="6" fill="#e8f4f1" stroke="#e8f4f1" stroke-width="1"/>
+<text x="359" y="132" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#087f78" text-anchor="middle">Candidate pool</text>
+<text x="359" y="154" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">an approximation of</text>
+<text x="359" y="172" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">the real world</text>
+<line x1="450" y1="150" x2="496" y2="150" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="502" y="78" width="190" height="144" rx="6" fill="#ffffff" stroke="#d9e1df" stroke-width="1"/>
+<text x="597" y="122" font-family="Inter, sans-serif" font-size="26" font-weight="800" fill="#14222b" text-anchor="middle">20,000+</text>
+<text x="597" y="146" font-family="Inter, sans-serif" font-size="13" font-weight="400" fill="#596a73" text-anchor="middle">junctions labelled</text>
+<text x="597" y="166" font-family="Inter, sans-serif" font-size="13" font-weight="400" fill="#596a73" text-anchor="middle">by hand as ground truth</text>
+<text x="597" y="196" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#087f78" text-anchor="middle">double annotation + checks</text>
+<path d="M698 150 H726 V86 H762" fill="none" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M698 150 H726 V214 H762" fill="none" stroke="#9eaaa9" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="768" y="52" width="184" height="68" rx="6" fill="#ffffff" stroke="#087f78" stroke-width="1"/>
+<text x="860" y="84" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">Training set</text>
+<text x="860" y="104" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">the model learns here</text>
+<rect x="768" y="180" width="184" height="68" rx="6" fill="#ffffff" stroke="#db6f28" stroke-width="1"/>
+<text x="860" y="212" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#14222b" text-anchor="middle">Evaluation set</text>
+<text x="860" y="232" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="middle">never seen in training</text>
+</svg>
+          <figcaption>Rules only find what the rules already describe. Mixing in trajectories and user reports meant the evaluation set could expose junctions our own assumptions had never covered.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="eyebrow">Core product decision</p>
+        <h2>Do not force one model threshold onto every user</h2>
+        <p class="section-intro">Precision and recall moved in opposite directions. Instead of treating the model output as a binary answer, I defined four product responses based on confidence and the user cost of being wrong.</p>
+        <figure class="diagram">
+          <p class="diagram-title">The trade-off, mapped onto product behaviour</p>
+          <svg viewBox="0 0 960 300" role="img" aria-label="Precision falls as recall rises; three confidence bands are mapped onto three strengths of guidance">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="90" y="60" width="250" height="190" fill="#e8f4f1"/>
+<rect x="340" y="60" width="250" height="190" fill="#eef1ef"/>
+<rect x="590" y="60" width="260" height="190" fill="#f9eee5"/>
+<text x="215" y="48" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#087f78" text-anchor="middle">Strong guidance</text>
+<text x="465" y="48" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#596a73" text-anchor="middle">Voice only</text>
+<text x="720" y="48" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#db6f28" text-anchor="middle">Soft prompt, deliberately wide</text>
+<line x1="90" y1="250" x2="850" y2="250" stroke="#d9e1df" stroke-width="1.5"/>
+<line x1="90" y1="250" x2="90" y2="60" stroke="#d9e1df" stroke-width="1.5"/>
+<text x="80" y="66" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="end">precision</text>
+<text x="850" y="272" font-family="Inter, sans-serif" font-size="12.5" font-weight="400" fill="#596a73" text-anchor="end">recall</text>
+<path d="M90 75 C 310 85, 470 130, 850 228" fill="none" stroke="#087f78" stroke-width="3"/>
+</svg>
+          <figcaption>Rather than pick one operating point on the curve, I mapped bands of it onto three strengths of guidance. An uncertain prompt is still a prompt, so it stays vague: wrong costs far less than a missed exit.</figcaption>
+        </figure>
+        <div class="policy-grid">
+          <article class="policy-card"><span class="confidence">High confidence</span><h3>Strong guidance</h3><p>A clear voice prompt paired with a simplified two-dimensional junction diagram, lane markings and direction arrow.</p><div class="policy-output">Voice + visual</div></article>
+          <article class="policy-card"><span class="confidence">Medium confidence</span><h3>Specific caution</h3><p>A voice prompt identifies the type of complex junction and asks the driver to slow down and observe.</p><div class="policy-output">Specific voice</div></article>
+          <article class="policy-card"><span class="confidence">Uncertain</span><h3>Low-cost warning</h3><p>A non-directive message notes an easy-to-miss junction. Even a false positive feels plausible rather than disruptive.</p><div class="policy-output">Soft voice</div></article>
+          <article class="policy-card"><span class="confidence">Negative</span><h3>Stay silent</h3><p>No additional prompt is shown. The normal navigation experience continues without unnecessary interruption.</p><div class="policy-output">No intervention</div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="results">
+      <div class="container results-layout">
+        <div>
+          <p class="eyebrow">Evaluation and rollout</p>
+          <h2>Test the model and the experience together</h2>
+          <p>The team checked more than 5,000 mined junctions by hand, completed 100+ field tests with the guidance experience and ran a two-month A/B test. Rollout expanded city by city from 1% to 100%, while monitoring off-route behaviour, detours and user feedback.</p>
+          <p>The final release covered 15+ leading cities and millions of users.</p>
+        </div>
+        <div>
+          <div class="result-bars" aria-label="Relative reductions">
+            <div class="bar-row"><span class="bar-label">Known difficult junctions</span><div class="bar-track"><div class="bar-fill" style="width:96%"></div></div><span class="bar-value">-48%</span></div>
+            <div class="bar-row"><span class="bar-label">Model-discovered junctions</span><div class="bar-track"><div class="bar-fill" style="width:36%"></div></div><span class="bar-value">-18%</span></div>
+            <div class="bar-row"><span class="bar-label">Motorway detours</span><div class="bar-track"><div class="bar-fill orange" style="width:56%"></div></div><span class="bar-value">-28%</span></div>
+          </div>
+          <div class="evidence-note"><strong>Attribution boundary:</strong> these are relative changes within the activated junction cohorts. The overall navigation off-route rate did not move measurably because complex junctions represented only 2-3% of the full network.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="reflection">
+      <div class="container story-grid">
+        <div>
+          <p class="eyebrow">What I contributed</p>
+          <h2>Product management made uncertainty usable</h2>
+          <p class="lede">I originated the project, defined the labelling policy, contributed feature hypotheses, set confidence thresholds through field testing and led the staged rollout. Algorithm, data, client and QA partners built and validated the solution with me.</p>
+        </div>
+        <div class="attribution">
+          <h3>What I learned</h3>
+          <p>Machine learning was appropriate because the problem had a bounded scenario, labelable ground truth and a measurable user outcome. Product judgement mattered most when model performance stalled: connecting features back to driver behaviour, city context and physical road conditions revealed signals that abstract map data missed. The same scenario-based method was later extended to metro and indoor positioning.</p>
+        </div>
+      </div>
+      <div class="container hero-actions">
+        <a class="button button-light" href="../downloads/Chao_Liu_PM_Portfolio_Complex_Junctions.pdf" download>Download the case PDF</a>
+        <a class="button button-secondary" style="border-color:#fff;color:#fff" href="../index.html#work">Back to selected work</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="eyebrow">Continue</p>
+        <div class="case-nav">
+          <a href="drone-delivery.html"><span>Previous case</span><strong>Scaling drone delivery through navigation reliability</strong></a>
+          <a href="event-platform.html"><span>Next case</span><strong>Building a real-time event publishing platform</strong></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-row"><span>© <span data-year></span> Chao Liu</span><span>Details anonymised · Interfaces reconstructed · Photos illustrative</span></div></footer>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
